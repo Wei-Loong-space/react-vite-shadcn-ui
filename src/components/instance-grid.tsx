@@ -10,9 +10,13 @@ import InstanceCard from "./instance-card";
 
 interface InstanceGridProps {
   instances: InstanceData[];
+  onRefresh?: () => void;
 }
 
-export default function InstanceGrid({ instances }: InstanceGridProps) {
+export default function InstanceGrid({
+  instances,
+  onRefresh,
+}: InstanceGridProps) {
   return (
     <Card className="flex-1 border-green-500/30 bg-black/80 backdrop-blur-sm">
       <CardContent className="p-4">
@@ -23,6 +27,17 @@ export default function InstanceGrid({ instances }: InstanceGridProps) {
             <span className="text-xs text-green-500/70">
               {instances.length} total
             </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onRefresh}
+              className="h-7 border-green-500/30 hover:bg-green-500/10 text-xs"
+            >
+              Refresh
+            </Button>
           </div>
         </div>
 
