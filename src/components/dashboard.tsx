@@ -18,47 +18,54 @@ export default function Dashboard() {
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
   // Connect to WebSocket and handle instance data
+  let reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
   useEffect(() => {
-    // In a real implementation, replace with your actual WebSocket endpoint
-    const ws = new WebSocket("wss://your-websocket-endpoint");
+    let ws: WebSocket;
 
-    ws.onopen = () => {
-      setConnectionStatus("connected");
-      console.log("WebSocket connection established");
+    const connectWebSocket = () => {
+      ws = new WebSocket("ws://localhost:8080");
+
+      ws.onopen = () => {
+        setConnectionStatus("connected");
+        console.log("WebSocket connection established");
+        if (reconnectTimeout) {
+          clearTimeout(reconnectTimeout);
+          reconnectTimeout = null;
+        }
+      };
+
+      ws.onclose = () => {
+        setConnectionStatus("disconnected");
+        console.log("WebSocket connection closed, attempting to reconnect...");
+        // Try to reconnect after a delay
+        reconnectTimeout = setTimeout(connectWebSocket, 5000); // reconnect after 5 seconds
+      };
+
+      ws.onmessage = event => {
+        try {
+          const data = JSON.parse(event.data);
+          console.log("Receiving data ;D");
+          setInstances(data);
+          // setLastUpdate(new Date());
+        } catch (error) {
+          console.error("Error parsing WebSocket data:", error);
+        }
+      };
     };
 
-    ws.onclose = () => {
-      setConnectionStatus("disconnected");
-      console.log("WebSocket connection closed");
-    };
+    // Establish initial WebSocket connection
+    connectWebSocket();
 
-    ws.onmessage = event => {
-      try {
-        const data = JSON.parse(event.data);
-        setInstances(data);
-        setLastUpdate(new Date());
-      } catch (error) {
-        console.error("Error parsing WebSocket data:", error);
+    // Cleanup function to close WebSocket and clear any timeouts
+    return () => {
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.close();
+      }
+      if (reconnectTimeout) {
+        clearTimeout(reconnectTimeout);
       }
     };
-
-    // Mock data for preview purposes
-    const mockData: InstanceData[] = Array.from({ length: 100 }, (_, i) => ({
-      id: `i-${Math.random().toString(36).substring(2, 12)}`,
-      status: Math.random() > 0.2 ? "running" : "pending",
-    }));
-
-    setInstances(mockData);
-    setLastUpdate(new Date());
-
-    return () => {
-      ws.close();
-    };
   }, []);
-
-  const filteredInstances = instances.filter(instance =>
-    instance.id.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
 
   const runningCount = instances.filter(i => i.status === "running").length;
   const pendingCount = instances.filter(i => i.status === "pending").length;
@@ -114,7 +121,7 @@ export default function Dashboard() {
       </header>
 
       <div className="flex-1 flex flex-col lg:flex-row gap-4">
-        <InstanceGrid instances={filteredInstances} />
+        <InstanceGrid instances={instances} />
         <StatusConsole instances={instances} lastUpdate={lastUpdate} />
       </div>
     </div>

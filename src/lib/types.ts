@@ -1,4 +1,4 @@
 export interface InstanceData {
-  id: string;
+  uuid: string;
   status: "pending" | "running";
 }

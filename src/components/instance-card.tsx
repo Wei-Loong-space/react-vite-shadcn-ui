@@ -28,9 +28,9 @@ export default function InstanceCard({ instance }: InstanceCardProps) {
 
         <div
           className="text-xs font-mono mt-1 text-green-400 group-hover:text-green-300 transition-colors truncate"
-          title={instance.id}
+          title={instance.uuid}
         >
-          {instance.id}
+          {instance.uuid}
         </div>
 
         <div className="mt-2 h-1 w-full bg-green-950/50 overflow-hidden rounded-full">

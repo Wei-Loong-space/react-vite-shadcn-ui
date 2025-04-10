@@ -13,30 +13,6 @@ interface InstanceGridProps {
 }
 
 export default function InstanceGrid({ instances }: InstanceGridProps) {
-  const [sortBy, setSortBy] = useState<"id" | "status">("id");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
-
-  const toggleSort = (field: "id" | "status") => {
-    if (sortBy === field) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-    } else {
-      setSortBy(field);
-      setSortDirection("asc");
-    }
-  };
-
-  const sortedInstances = [...instances].sort((a, b) => {
-    if (sortBy === "id") {
-      return sortDirection === "asc"
-        ? a.id.localeCompare(b.id)
-        : b.id.localeCompare(a.id);
-    } else {
-      return sortDirection === "asc"
-        ? a.status.localeCompare(b.status)
-        : b.status.localeCompare(a.status);
-    }
-  });
-
   return (
     <Card className="flex-1 border-green-500/30 bg-black/80 backdrop-blur-sm">
       <CardContent className="p-4">
@@ -54,36 +30,13 @@ export default function InstanceGrid({ instances }: InstanceGridProps) {
               variant="outline"
               size="sm"
               className="h-7 border-green-500/30 hover:bg-green-500/10 text-xs"
-              onClick={() => toggleSort("id")}
-            >
-              ID{" "}
-              {sortBy === "id" &&
-                (sortDirection === "asc" ? (
-                  <ChevronUp className="ml-1 h-3 w-3" />
-                ) : (
-                  <ChevronDown className="ml-1 h-3 w-3" />
-                ))}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-7 border-green-500/30 hover:bg-green-500/10 text-xs"
-              onClick={() => toggleSort("status")}
-            >
-              Status{" "}
-              {sortBy === "status" &&
-                (sortDirection === "asc" ? (
-                  <ChevronUp className="ml-1 h-3 w-3" />
-                ) : (
-                  <ChevronDown className="ml-1 h-3 w-3" />
-                ))}
-            </Button>
+            ></Button>
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-          {sortedInstances.map(instance => (
-            <InstanceCard key={instance.id} instance={instance} />
+          {instances.map(instance => (
+            <InstanceCard key={instance.uuid} instance={instance} />
           ))}
         </div>
       </CardContent>
