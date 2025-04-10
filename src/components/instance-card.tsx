@@ -12,6 +12,7 @@ export default function InstanceCard({ instance }: InstanceCardProps) {
     instance.status === "running"
       ? "text-green-400 border-green-500/50 bg-green-500/10"
       : "text-yellow-400 border-yellow-500/50 bg-yellow-500/10";
+  const progress = instance.progress ? instance.progress * 100 : 0;
 
   return (
     <Card className="border border-green-500/30 bg-black hover:bg-green-950/30 transition-colors group">
@@ -25,20 +26,19 @@ export default function InstanceCard({ instance }: InstanceCardProps) {
             {instance.status}
           </div>
         </div>
-
         <div
           className="text-xs font-mono mt-1 text-green-400 group-hover:text-green-300 transition-colors truncate"
           title={instance.uuid}
         >
           {instance.uuid}
         </div>
-
+        <span className="mt-2">{progress}%</span>
         <div className="mt-2 h-1 w-full bg-green-950/50 overflow-hidden rounded-full">
           <div
             className={`h-full ${
               instance.status === "running" ? "bg-green-500" : "bg-yellow-500"
             } animate-pulse`}
-            style={{ width: instance.status === "running" ? "100%" : "60%" }}
+            style={{ width: `${progress}%` }}
           />
         </div>
       </CardContent>

@@ -24,14 +24,6 @@ export default function InstanceGrid({ instances }: InstanceGridProps) {
               {instances.length} total
             </span>
           </div>
-
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-7 border-green-500/30 hover:bg-green-500/10 text-xs"
-            ></Button>
-          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
