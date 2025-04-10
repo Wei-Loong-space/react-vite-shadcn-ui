@@ -5,9 +5,10 @@ import type { InstanceData } from "@/lib/types";
 
 interface InstanceCardProps {
   instance: InstanceData;
+  onClick: (instance: InstanceData) => void;
 }
 
-export default function InstanceCard({ instance }: InstanceCardProps) {
+export default function InstanceCard({ instance, onClick }: InstanceCardProps) {
   const statusColor =
     instance.status === "running"
       ? "text-green-400 border-green-500/50 bg-green-500/10"
@@ -15,7 +16,12 @@ export default function InstanceCard({ instance }: InstanceCardProps) {
   const progress = instance.progress ? instance.progress * 100 : 0;
 
   return (
-    <Card className="border border-green-500/30 bg-black hover:bg-green-950/30 transition-colors group">
+    <Card
+      onClick={() => {
+        onClick(instance);
+      }}
+      className="border border-green-500/30 bg-black hover:bg-green-950/30 transition-colors group"
+    >
       <CardContent className="p-3 flex flex-col">
         <div className="flex items-center justify-between mb-2">
           <Server className="h-4 w-4 text-green-500/70" />
